@@ -1,7 +1,7 @@
 <template>
   <h1>To Do</h1>
-  <form v-on:submit.prevent="newTodo">
-    <input type="text" id="todo" placeholder="New To Do" v-model="form.todo">
+  <form @submit.prevent="addTodo">
+    <input type="text" placeholder="New To Do" v-model="newTodo">
     <button>Submit</button>
   </form>
   <table>
@@ -33,32 +33,45 @@
 
 <script>
 import axios from 'axios'
+import { watch, onMounted, ref } from 'vue'
 
 export default {
-  data() {
-    return {
-      todos: [],
-      form: {
-        todo: ''
-      }
+  setup() {
+    const todos = ref([])
+    const newTodo = ref('')
+
+    watch(todos, () => {
+      getTodo()
+    })
+
+    function getTodo() {
+      axios.get('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd')
+      .then(res => {
+        todos.value = res.data
+      })
     }
-  },
-  methods: {
-    newTodo() {
-      axios.post('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd', this.form)
-    },
-    done(id) {
+    function addTodo() {
+      axios.post('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd', {'todo': newTodo.value})
+      .then(newTodo.value = '')
+    }
+    function done(id) {
       axios.put('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd', {id: id})
-    },
-    deleteTodo(id) {
+    }
+    function deleteTodo(id) {
       axios.delete('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd', {data: {id: id}})
     }
-  },
-  mounted() {
-    axios.get('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd')
-    .then(res => {
-      this.todos = res.data
+
+    onMounted(() => {
+      getTodo()
     })
+    return {
+      todos,
+      newTodo,
+      getTodo,
+      addTodo,
+      done,
+      deleteTodo
+    }
   }
 };
 </script>
