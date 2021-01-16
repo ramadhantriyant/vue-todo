@@ -51,14 +51,14 @@ export default {
       TodoDataService.getAll().then(res => {todos.value = res.data})
     }
     function addTodo() {
-      TodoDataService.create({'todo': newTodo.value}).then(getTodo())
+      TodoDataService.create({'todo': newTodo.value}).then(() => getTodo())
       newTodo.value = ''
     }
     function done(id) {
-      TodoDataService.update({id: id}).then(getTodo())
+      TodoDataService.update({id: id}).then(() => getTodo())
     }
     function deleteTodo(id) {
-      TodoDataService.delete({id: id}).then(getTodo())
+      TodoDataService.delete({id: id}).then(() => getTodo())
     }
 
     onMounted(() => {
