@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import TodoDataService from '../services/TodoDataService'
 import { watch, onMounted, ref } from 'vue'
 
 export default {
@@ -41,29 +41,29 @@ export default {
     const newTodo = ref('')
 
     watch(todos, () => {
-      getTodo()
+      // getTodo()
+      todos.value.forEach((todo) => {
+        console.log(`todo: ${todo.todo}`)
+      })
     })
 
     function getTodo() {
-      axios.get('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd')
-      .then(res => {
-        todos.value = res.data
-      })
+      TodoDataService.getAll().then(res => {todos.value = res.data})
     }
     function addTodo() {
-      axios.post('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd', {'todo': newTodo.value})
-      .then(newTodo.value = '')
+      TodoDataService.create({'todo': newTodo.value}).then(newTodo.value = '')
     }
     function done(id) {
-      axios.put('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd', {id: id})
+      TodoDataService.update({id: id})
     }
     function deleteTodo(id) {
-      axios.delete('https://z0dl5q9pr7.execute-api.ap-southeast-1.amazonaws.com/prd', {data: {id: id}})
+      TodoDataService.delete({id: id})
     }
 
     onMounted(() => {
       getTodo()
     })
+
     return {
       todos,
       newTodo,
