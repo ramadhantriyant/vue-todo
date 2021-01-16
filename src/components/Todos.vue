@@ -2,7 +2,7 @@
   <h1>To Do</h1>
   <form @submit.prevent="addTodo">
     <input type="text" placeholder="New To Do" v-model="newTodo">
-    <button>Submit</button>
+    <input type="submit" value="Submit">
   </form>
   <table>
     <thead>
