@@ -33,19 +33,12 @@
 
 <script>
 import TodoDataService from '../services/TodoDataService'
-import { watch, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 export default {
   setup() {
     const todos = ref([])
     const newTodo = ref('')
-
-    watch(todos, () => {
-      // getTodo()
-      todos.value.forEach((todo) => {
-        console.log(`todo: ${todo.todo}`)
-      })
-    })
 
     function getTodo() {
       TodoDataService.getAll().then(res => {todos.value = res.data})
